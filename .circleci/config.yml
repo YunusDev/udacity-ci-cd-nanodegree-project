@@ -13,6 +13,7 @@ jobs:
           name: Build frontend
           command: |
             cd frontend
+            npm i
             npm run build
       - save_cache:
           key: frontend-build
@@ -31,6 +32,7 @@ jobs:
           name: Build backend
           command: |
             cd backend
+            npm i
             npm run build
       - save_cache:
           key: backend-build
