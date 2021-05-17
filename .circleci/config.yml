@@ -35,7 +35,7 @@ jobs:
           paths: 
             - backend/node_modules
 
-workflow:
+workflows:
   default:
     jobs:
       - build-frontend
