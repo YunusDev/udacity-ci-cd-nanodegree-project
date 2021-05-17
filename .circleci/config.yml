@@ -6,8 +6,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: pwd
-      - run: ls
+      - run: cd frontend
       - restore_cache:
           keys: 
             - frontend-build
@@ -24,9 +23,8 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: pwd
       - checkout
-      - run: pwd
+      - run: cd backend
       - restore_cache:
           keys:
            - backend-build
