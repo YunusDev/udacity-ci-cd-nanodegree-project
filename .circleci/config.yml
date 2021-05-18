@@ -32,8 +32,16 @@ commands:
               npm i
               npm run migrations:revert
             fi
+  install-aws-cli:
+    description: Install AWS cli
+    steps:
+      - run: 
+          name: Install
+          when: on_fail
+          command: apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
 
 jobs:
+
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -201,6 +209,7 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cat .circleci/ansible/inventory.txt
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
+      - install-aws-cli
       - destroy-environment:
           id: ${GENERIC_ID}
 
@@ -239,6 +248,7 @@ jobs:
           command: |
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "1" https://api.memstash.io/values/MIGRATION_STATUS_${GENERIC_ID}
+      - install-aws-cli
       - destroy-environment:
           id: ${GENERIC_ID}
       - revert-migrations
