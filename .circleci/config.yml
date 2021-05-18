@@ -100,6 +100,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - run: yum -y install tar gzip
       - run: 
           name: Deploy Backend Infrastructure
           command: |
@@ -121,6 +122,7 @@ jobs:
           command: |
             cd .circleci/ansible
             echo "[web]" > inventory.txt
+            cat .circleci/ansible/inventory.txt
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text >> inventory.txt
