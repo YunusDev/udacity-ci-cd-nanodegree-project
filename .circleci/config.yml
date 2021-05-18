@@ -125,22 +125,14 @@ jobs:
               --parameter-overrides ID="${GENERIC_ID}" \
               --tags project=udapeople
       - run: 
-          name: Deploy Frontend Infrastructure
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --stack-name "udapeople-frontend-${GENERIC_ID}" \
-              --parameter-overrides ID="${GENERIC_ID}" \
-              --tags project=udapeople
-      - run: 
           name: Add Backend IP to ansible inventory
           command: |
             cd .circleci/ansible
             echo "[web]" > inventory.txt
+            # --filters "Name=tag:Name, Values=backend-${GENERIC_ID}"
             BACKEND_IP = $(aws ec2 describe-instances \
-            # --filters "Name=tag:Name, Values=backend-${GENERIC_ID}" \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text)
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
             echo "$BACKEND_IP" >> inventory.txt
             cat inventory.txt
       - run:
@@ -148,6 +140,16 @@ jobs:
           command: |
             curl -H "Content-Type: text/plain" -H "token: e51b7efc-9353-4a51-befe-02f41ff9506c" --request PUT \ 
             --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
+      - run: 
+          name: Deploy Frontend Infrastructure
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --stack-name "udapeople-frontend-${GENERIC_ID}" \
+              --parameter-overrides ID="${GENERIC_ID}" \
+              --tags project=udapeople
+      
+      
       - persist_to_workspace:
           root: ~/
           paths:
