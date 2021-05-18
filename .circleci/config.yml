@@ -11,9 +11,9 @@ commands:
           name: Destroy Environments
           when: on_fail
           command: |
-            # aws cloudformation delete-stack --stack-name "udapeople-backend-${GENERIC_ID}" 
-            # aws s3 rm s3://udapeople-${GENERIC_ID} --recursive
-            # aws cloudformation delete-stack --stack-name "udapeople-frontend-${GENERIC_ID}"
+            aws cloudformation delete-stack --stack-name "udapeople-backend-${GENERIC_ID}" 
+            aws s3 rm s3://udapeople-${GENERIC_ID} --recursive
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-${GENERIC_ID}"
 
 jobs:
   build-frontend:
@@ -125,22 +125,17 @@ jobs:
               --parameter-overrides ID="${GENERIC_ID}" \
               --tags project=udapeople
       - run: 
-          name: Add Backend IP to ansible inventory
+          name: Add Backend IP to ansible inventory and to Memstash
           command: |
             cd .circleci/ansible
             echo "[web]" > inventory.txt
-            # --filters "Name=tag:Name, Values=backend-${GENERIC_ID}"
             BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:project, Values=udapeople" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "$BACKEND_IP" >> inventory.txt
             cat inventory.txt
             curl -H "Content-Type: text/plain" -H "token: udapeople-e51b7efc-9353-4a51-befe-02f41ff950" \
-            --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
-      - run:
-          name: Add Backend URL to MemStash
-          command: |
-            curl -H "Content-Type: text/plain" -H "token: udapeople-e51b7efc-9353-4a51-befe-02f41ff9506" \
             --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
       - run: 
           name: Deploy Frontend Infrastructure
@@ -150,12 +145,44 @@ jobs:
               --stack-name "udapeople-frontend-${GENERIC_ID}" \
               --parameter-overrides ID="${GENERIC_ID}" \
               --tags project=udapeople
-      
-      
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      - destroy_environment:
+          id: ${GENERIC_ID}
+
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: 
+            - "37:00:66:b0:ae:44:ac:ef:92:13:9f:7d:e3:a1:a3:60"
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install Dependencies
+          command: |
+              apk add --update ansible nodejs npm 
+      - run:
+          name: Configure Infrastructure
+          command: |
+            echo ENVIRONMENT=production > "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
+            echo NODE_ENV=production >> "backend/.env"
+
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            cat .circleci/ansible/inventory.txt
+            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
       - destroy_environment:
           id: ${GENERIC_ID}
 workflows:
