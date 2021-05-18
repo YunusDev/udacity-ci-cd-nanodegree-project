@@ -1,5 +1,20 @@
 version: 2.1
 
+commands:
+  destroy_environment:
+    description: Destroy backend and frontend cloudformation stacks given a workflow ID.
+    parameters:
+      id:
+        type: string
+    steps:
+      - run:
+          name: Destroy Environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name "udapeople-backend-${GENERIC_ID}" 
+            aws s3 rm s3://udapeople-${GENERIC_ID} --recursive
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-${GENERIC_ID}"
+
 jobs:
   build-frontend:
     docker:
@@ -118,20 +133,24 @@ jobs:
               --parameter-overrides ID="${GENERIC_ID}" \
               --tags project=udapeople
       - run: 
-          name: Add Backend IP to ansible inventory
+          name: Add Backend IP to ansible inventory and MemStash
           command: |
             cd .circleci/ansible
             echo "[web]" > inventory.txt
-            aws ec2 describe-instances \
+            BACKEND_IP = $(aws ec2 describe-instances \
+            --filters "Name=tag:Name, Values=backend-${GENERIC_ID}"
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text >> inventory.txt
-            cat inventory.txt
+            --output text)
+            echo "$BACKEND_IP" >> inventory.txt
+            curl -H "Content-Type: text/plain" -H "token: e51b7efc-9353-4a51-befe-02f41ff9506c" --request PUT \ 
+            --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
             cat inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-
+      - destroy_environment:
+          id: ${GENERIC_ID}
 workflows:
   default:
     jobs:
