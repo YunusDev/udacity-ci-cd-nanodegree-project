@@ -200,7 +200,6 @@ jobs:
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cat .circleci/ansible/inventory.txt
-            cat backend/.env
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
       - destroy-environment:
           id: ${GENERIC_ID}
@@ -227,6 +226,8 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
 
             cd backend
+            rm -rf node_modules/
+            ls
             npm i
             npm run migrations >> migration_messg.txt
             cat migration_messg.txt
