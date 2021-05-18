@@ -134,14 +134,14 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "$BACKEND_IP" >> inventory.txt
-            curl -H "Content-Type: text/plain" -H "token: e51b7efc-9353-4a51-befe-02f41ff9506c" --request PUT \ 
-              --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
             cat inventory.txt
+            curl -H "Content-Type: text/plain" -H "token: udapeople-e51b7efc-9353-4a51-befe-02f41ff9506c" \
+            --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
       - run:
           name: Add Backend URL to MemStash
           command: |
-            curl -H "Content-Type: text/plain" -H "token: e51b7efc-9353-4a51-befe-02f41ff9506c" --request PUT \ 
-            --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
+            curl -H "Content-Type: text/plain" -H "token: udapeople-e51b7efc-9353-4a51-befe-02f41ff9506c" \
+            --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL
       - run: 
           name: Deploy Frontend Infrastructure
           command: |
