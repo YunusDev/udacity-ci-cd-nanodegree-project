@@ -216,6 +216,7 @@ jobs:
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run:
@@ -236,7 +237,6 @@ jobs:
 
             cd backend
             rm -rf node_modules/
-            ls
             npm i
             npm run migrations >> migration_messg.txt
             cat migration_messg.txt
