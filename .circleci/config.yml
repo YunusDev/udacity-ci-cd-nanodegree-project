@@ -248,7 +248,7 @@ jobs:
           command: |
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "1" https://api.memstash.io/values/MIGRATION_STATUS_${GENERIC_ID}
-      - install-aws-cli
+      # - install-aws-cli
       - destroy-environment:
           id: ${GENERIC_ID}
       - revert-migrations
