@@ -130,7 +130,7 @@ jobs:
             cd .circleci/ansible
             echo "[web]" > inventory.txt
             # --filters "Name=tag:Name, Values=backend-${GENERIC_ID}"
-            BACKEND_IP = $(aws ec2 describe-instances \
+            BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "$BACKEND_IP" >> inventory.txt
