@@ -157,6 +157,7 @@ jobs:
             cat inventory.txt
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL_${GENERIC_ID}
+            echo BACKEND_URL_${GENERIC_ID}
       - run: 
           name: Deploy Frontend Infrastructure
           command: |
@@ -262,7 +263,7 @@ jobs:
       - run:
           name: Deploy frontend objects
           command: |
-            # your code here
+            echo "${API_URL}"
 
 workflows:
   default:
