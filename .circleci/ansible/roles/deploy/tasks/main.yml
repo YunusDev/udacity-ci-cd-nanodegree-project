@@ -14,12 +14,8 @@
   ansible.builtin.unarchive:
     src: "dist.zip"
     dest: "~/app"
-  register: execute_node
 - name: "Executing nodejs"
   shell: |
     cd ~/app
     rm -rf dist.zip
     pm2 start main.js -f
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"

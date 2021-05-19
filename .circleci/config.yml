@@ -288,7 +288,7 @@ jobs:
           name: Install Dependencies
           command: |
               apk add --update ansible zip npm curl
-              # pip install awscli
+              pip install awscli
       - run:
           name: Build and Zip Backend dist
           command: |
@@ -297,7 +297,6 @@ jobs:
             npm run build
             cd dist
             zip -rq dist.zip *
-            ls -a
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.zip  ~/project/.circleci/ansible/roles/deploy/files/
       - run:
@@ -305,10 +304,45 @@ jobs:
           command: |
             cat .circleci/ansible/inventory.txt
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
-
       - destroy-environment:
           id: ${GENERIC_ID}
       - revert-migrations
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update curl
+      - run:
+          name: Get backend url
+          command: |
+          export BACKEND_URL=$(curl -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
+          --request GET https://api.memstash.io/values/BACKEND_URL_${GENERIC_ID})
+          echo $BACKEND_URL
+      - run:
+          name: Backend smoke test.
+          command: |
+            echo $BACKEND_URL
+            if curl -s https://${BACKEND_URL}:3030/api/status
+            then
+              return 1
+            else
+              return 0
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL=http://udapeople-${URL}.s3-website-us-east-1.amazonaws.com
+            echo $URL
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 1
+            fi
            
 workflows:
   default:
@@ -343,3 +377,7 @@ workflows:
       - deploy-backend:
           requires:
             - deploy-infrastructure
+      - smoke-test:
+          requires:
+            - deploy-frontend
+            - deploy-backend
