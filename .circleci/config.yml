@@ -178,7 +178,6 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - aws-cli/setup
       - add_ssh_keys:
           fingerprints: 
             - "37:00:66:b0:ae:44:ac:ef:92:13:9f:7d:e3:a1:a3:60"
@@ -250,6 +249,7 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -270,8 +270,8 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      # - build-frontend
+      # - build-backend
       # - test-frontend:
       #     requires:
       #       - build-frontend
@@ -285,9 +285,9 @@ workflows:
       #     requires:
       #       - build-backend
       - deploy-infrastructure:
-          requires:
-            - build-frontend
-            - build-backend
+          # requires:
+            # - build-frontend
+            # - build-backend
       - configure-infrastructure:
           requires:
             - deploy-infrastructure
