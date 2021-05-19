@@ -185,7 +185,8 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-              apk add --update ansible
+            apk add --update ansible
+            pip install awscli
       - run:
           name: Configure Infrastructure
           command: |
@@ -287,7 +288,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-              apk add --update ansible zip npm curl
+              apk add --update ansible zip unzip npm curl
               pip install awscli
       - run:
           name: Build and Zip Backend dist
