@@ -4,6 +4,12 @@
   file: 
     path: ~/app
     state: directory
+- name: "Install dependencies"
+  become: yes
+  apt: 
+    name: ['unzip', 'tar']
+    state: latest
+    update_cache: yes
 # - name: Copy zipped dist
 #   copy:
 #     src: "dist.zip"
