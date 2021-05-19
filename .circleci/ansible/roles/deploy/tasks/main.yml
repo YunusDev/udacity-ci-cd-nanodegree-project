@@ -11,7 +11,8 @@
 - name: Unzip dist directory
   shell: |
     cd ~/app
-    unzip dist.zip
+    tar xzvf dist.zip
+    # unzip dist.zip
 - name: "Executing nodejs"
   shell: |
     pm2 start ~/app/main.js -f
