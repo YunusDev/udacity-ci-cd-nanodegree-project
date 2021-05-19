@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@2.0.2
+
 commands:
   destroy-environment:
     description: Destroy backend and frontend cloudformation stacks given a workflow ID.
@@ -32,16 +35,7 @@ commands:
               npm i
               npm run migrations:revert
             fi
-  install-aws-cli:
-    description: Install AWS cli
-    steps:
-      - run: 
-          name: Install
-          when: on_fail
-          command: apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
-
 jobs:
-
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -183,6 +177,7 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - aws-cli/setup
       - add_ssh_keys:
           fingerprints: 
             - "37:00:66:b0:ae:44:ac:ef:92:13:9f:7d:e3:a1:a3:60"
@@ -209,16 +204,15 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cat .circleci/ansible/inventory.txt
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
-      - install-aws-cli
       - destroy-environment:
           id: ${GENERIC_ID}
 
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
-      - image: amazon/aws-cli
     steps:
       - checkout
+      - aws-cli/setup
       - run:
           name: Run migrations
           command: |
@@ -236,7 +230,6 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
 
             cd backend
-            rm -rf node_modules/
             npm i
             npm run migrations >> migration_messg.txt
             cat migration_messg.txt
@@ -248,10 +241,28 @@ jobs:
           command: |
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "1" https://api.memstash.io/values/MIGRATION_STATUS_${GENERIC_ID}
-      # - install-aws-cli
       - destroy-environment:
           id: ${GENERIC_ID}
       - revert-migrations
+
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - run:
+        name: Install dependencies
+        command: |
+          # your code here
+      - run:
+          name: Get backend url
+          command: |
+            export API_URL=$(curl -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
+              --request GET https://api.memstash.io/values/BACKEND_URL_${GENERIC_ID})
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            # your code here
 
 workflows:
   default:
@@ -280,3 +291,6 @@ workflows:
       - run-migrations:
           requires:
             - configure-infrastructure
+      - deploy-frontend:
+          requires:
+            - deploy-infrastructure
