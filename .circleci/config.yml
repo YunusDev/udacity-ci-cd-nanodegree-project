@@ -393,8 +393,8 @@ jobs:
 
             echo "Old Workflow ID: $OldWorkflowID."
 
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+            export STACKS=$(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)
 
             printf '%s\n' "${STACKS[@]}"
 
