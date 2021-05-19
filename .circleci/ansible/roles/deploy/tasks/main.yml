@@ -5,8 +5,8 @@
     path: ~/app
     state: directory
 - name: Copy zipped dist
-  template:
-    src: "files/dist.zip"
+  copy:
+    src: "dist.zip"
     dest: "~/app/dist.zip"
 - name: Unzip dist directory
   shell: |
