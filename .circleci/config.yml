@@ -251,9 +251,11 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - run:
-        name: Install dependencies
-        command: |
-          # your code here
+          name: Install dependencies
+          command: |
+            cd frontend
+            npm i
+            npm i webpack-dev-server -g
       - run:
           name: Get backend url
           command: |
