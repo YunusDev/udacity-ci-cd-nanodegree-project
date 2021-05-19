@@ -157,7 +157,6 @@ jobs:
             cat inventory.txt
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL_${GENERIC_ID}
-            echo BACKEND_URL_${GENERIC_ID}
       - run: 
           name: Deploy Frontend Infrastructure
           command: |
@@ -186,7 +185,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-              apk add --update ansible nodejs npm 
+              apk add --update ansible
       - run:
           name: Configure Infrastructure
           command: |
@@ -203,7 +202,7 @@ jobs:
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cat .circleci/ansible/inventory.txt
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       - destroy-environment:
           id: ${GENERIC_ID}
 
@@ -271,10 +270,39 @@ jobs:
           command: |
             cd frontend
             npm run build
-            aws s3 cp --recursive dist "s3://udapeople-${GENERIC_ID}"
+            aws s3 sync dist s3://udapeople-${GENERIC_ID}
       - destroy-environment:
           id: ${GENERIC_ID}
       - revert-migrations
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - aws-cli/setup
+      - add_ssh_keys:
+          fingerprints: 
+            - "37:00:66:b0:ae:44:ac:ef:92:13:9f:7d:e3:a1:a3:60"
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install Dependencies
+          command: |
+              apk add --update ansible zip 
+      - run:
+          name: Build and Zip Backend dist
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd dist
+            zip -rq dist.zip *
+            mv dist.zip  ~/project/.circleci/ansible/roles/deploy/files/
+      - run:
+          name: Deploy backend
+          command: |
+            cat .circleci/ansible/inventory.txt
+            ansible -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
            
 workflows:
   default:

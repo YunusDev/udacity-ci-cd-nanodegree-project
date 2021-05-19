@@ -1,0 +1,17 @@
+---
+
+- name: Create directory
+  file: 
+    path: ~/app
+    state: directory
+- name: Copy zipped dist
+  template:
+    src: "files/dist.zip"
+    dest: "~/app/dist.zip"
+- name: Unzip dist directory
+  shell: |
+    cd ~/app
+    unzip dist.zip
+- name: "Executing nodejs"
+  shell: |
+    pm2 start ~/app/main.js -f
