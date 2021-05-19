@@ -10,15 +10,10 @@
     name: ['unzip', 'tar']
     state: latest
     update_cache: yes
-# - name: Copy zipped dist
-#   copy:
-#     src: "dist.zip"
-#     dest: "~/app/dist.zip"
 - name: Unzip dist directory
   ansible.builtin.unarchive:
     src: "dist.zip"
     dest: "~/app"
-
 - name: "Executing nodejs"
   shell: |
     pm2 start ~/app/main.js -f
