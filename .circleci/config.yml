@@ -279,7 +279,6 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - aws-cli/setup
       - add_ssh_keys:
           fingerprints: 
             - "37:00:66:b0:ae:44:ac:ef:92:13:9f:7d:e3:a1:a3:60"
@@ -303,6 +302,10 @@ jobs:
           command: |
             cat .circleci/ansible/inventory.txt
             ansible -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+
+      - destroy-environment:
+          id: ${GENERIC_ID}
+      - revert-migrations
            
 workflows:
   default:
