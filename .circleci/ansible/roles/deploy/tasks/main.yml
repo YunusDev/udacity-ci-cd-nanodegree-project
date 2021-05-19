@@ -1,16 +1,4 @@
 ---
-- name: "update apt packages."
-  become: yes
-  apt:
-    update_cache: yes
-- name: "upgrade packages"
-  become: yes
-  apt:
-    upgrade: yes
-- name: "remove unused dependencies"
-  become: yes
-  apt: 
-    autoremove: yes
 - name: "Install dependencies"
   become: yes
   apt: 
@@ -21,7 +9,6 @@
   file: 
     path: ~/app
     state: directory
-
 - name: Unzip dist directory
   ansible.builtin.unarchive:
     src: "dist.zip"
