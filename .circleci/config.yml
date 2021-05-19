@@ -297,6 +297,8 @@ jobs:
             npm run build
             cd dist
             zip -rq dist.zip *
+            ls -a
+            mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.zip  ~/project/.circleci/ansible/roles/deploy/files/
       - run:
           name: Deploy backend
