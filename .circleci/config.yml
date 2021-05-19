@@ -150,11 +150,15 @@ jobs:
             # --filters "Name=tag:project, Values=udapeople" \
             cd .circleci/ansible
             echo "[web]" > inventory.txt
-            BACKEND_IP=$(aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            BACKEND_IPS=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project, Values=udapeople" \
               --output text)
-            echo "$BACKEND_IP" >> inventory.txt
+            echo "$BACKEND_IPS" >> inventory.txt
             cat inventory.txt
+
+            BACKEND_IP=$(tail -1 inventory) 
+            echo "Backend IP: $BACKEND_IP"
+
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL_${CIRCLE_WORKFLOW_ID:0:7}
       - run:
