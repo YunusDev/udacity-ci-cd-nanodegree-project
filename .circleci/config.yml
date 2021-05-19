@@ -382,6 +382,7 @@ workflows:
       - deploy-backend:
           requires:
             - deploy-infrastructure
+            - configure-infrastructure
       - smoke-test:
           requires:
             - deploy-frontend
