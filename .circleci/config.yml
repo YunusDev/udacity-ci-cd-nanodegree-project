@@ -157,6 +157,7 @@ jobs:
             cat inventory.txt
 
             BACKEND_IP=$(tail -1 inventory.txt) 
+            echo "Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}"
             echo "New Backend IP: $BACKEND_IP"
 
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
