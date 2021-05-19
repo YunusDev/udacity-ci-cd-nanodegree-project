@@ -316,6 +316,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update curl
+            pip install awscli
       - run:
           name: Get backend url
           command: |
@@ -326,7 +327,7 @@ jobs:
           name: Backend smoke test.
           command: |
             echo $BACKEND_URL
-            if curl -s https://${BACKEND_URL}:3030/api/statuss
+            if curl -s https://${BACKEND_URL}:3030/api/status
             then
               return 1
             else
