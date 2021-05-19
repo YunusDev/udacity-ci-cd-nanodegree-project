@@ -9,10 +9,10 @@
     src: "dist.zip"
     dest: "~/app/dist.zip"
 - name: Unzip dist directory
-  shell: |
-    cd ~/app
-    tar xzvf dist.tar.gz
-    # unzip dist.zip
+  ansible.builtin.unarchive:
+    src: "~/app/dist.zip"
+    dest: "~/app"
+
 - name: "Executing nodejs"
   shell: |
     pm2 start ~/app/main.js -f
