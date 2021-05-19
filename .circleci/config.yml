@@ -397,6 +397,7 @@ jobs:
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)
 
             printf '%s\n' "${STACKS[@]}"
+            
 
             if printf '%s\n' "${STACKS[@]}" | grep -q "$OldWorkflowID"; then
               echo "Removing previous stack"
