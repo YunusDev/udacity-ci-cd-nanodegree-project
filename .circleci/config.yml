@@ -287,7 +287,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-              apk add --update ansible zip tar npm curl
+              apk add --update ansible  tar gzip npm curl
               # pip install awscli
       - run:
           name: Build and Zip Backend dist
@@ -296,7 +296,9 @@ jobs:
             npm i
             npm run build
             cd dist
-            zip -rq dist.zip *
+            tar czf dist.tar.gz 
+            ls -a
+            # zip -rq dist.zip *
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.zip  ~/project/.circleci/ansible/roles/deploy/files/
       - run:

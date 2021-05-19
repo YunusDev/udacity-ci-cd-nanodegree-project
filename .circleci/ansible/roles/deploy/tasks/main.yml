@@ -11,7 +11,7 @@
 - name: Unzip dist directory
   shell: |
     cd ~/app
-    tar xzvf dist.zip
+    tar xzvf dist.tar.gz
     # unzip dist.zip
 - name: "Executing nodejs"
   shell: |
