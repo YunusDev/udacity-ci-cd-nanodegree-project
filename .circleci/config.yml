@@ -363,8 +363,7 @@ jobs:
               --no-paginate --output text)
             echo "Prev WorkFlow Id: ${PrevWorkFlowId}"
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
-              --request PUT --data $PrevWorkFlowId https://api.memstash.io/values/PREV_WORKFLOW_ID_${CIRCLE_WORKFLOW_ID:0:7}
-
+            --request PUT --data "$PrevWorkFlowId" https://api.memstash.io/values/PREV_WORKFLOW_ID_${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name udapeople-cloudfront \
