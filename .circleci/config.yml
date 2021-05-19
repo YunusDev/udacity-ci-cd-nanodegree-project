@@ -363,7 +363,7 @@ jobs:
               --no-paginate --output text)
 
             echo "Old WorkFlow ID: ${OldWorkFlowID}"
-            
+
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
             --request PUT --data "$OldWorkFlowID" https://api.memstash.io/values/OLD_WORKFLOW_ID_${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation deploy \
@@ -383,7 +383,6 @@ jobs:
       - run:
           name: Get old stack workflow id and Remove old stacks and files
           command: |
-            # your code here
             export OldWorkflowID=$(curl -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
               --request GET https://api.memstash.io/values/OLD_WORKFLOW_ID_${CIRCLE_WORKFLOW_ID:0:7})
 
@@ -402,7 +401,7 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
       - destroy-environment:
-        id: ${CIRCLE_WORKFLOW_ID:0:7}
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations
 
 workflows:
