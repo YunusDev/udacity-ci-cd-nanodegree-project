@@ -4,13 +4,13 @@
   file: 
     path: ~/app
     state: directory
-- name: Copy zipped dist
-  copy:
-    src: "dist.zip"
-    dest: "~/app/dist.zip"
+# - name: Copy zipped dist
+#   copy:
+#     src: "dist.zip"
+#     dest: "~/app/dist.zip"
 - name: Unzip dist directory
   ansible.builtin.unarchive:
-    src: "~/app/dist.zip"
+    src: "dist.zip"
     dest: "~/app"
 
 - name: "Executing nodejs"
