@@ -250,7 +250,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - node/install
+      - node/setup
       - run:
           name: Install dependencies
           command: |
