@@ -296,6 +296,23 @@ jobs:
             apk add --update ansible zip npm curl
             pip install awscli
       - run:
+          name: Set env variables
+          command: |
+            echo ENVIRONMENT=production > "backend/.env"
+            echo NODE_ENV=production >> "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_ENTITIES=./modules/domain/**/*.entity.js >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=./migrations/*.js >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=./migrations >> "backend/.env"
+
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+
+            cat backend/.env
+      - run:
           name: Build and Zip Backend dist
           command: |
             cd backend
@@ -304,6 +321,8 @@ jobs:
             npm run build
             cd dist
             cp ../package.json .
+            cp ../.env .
+            ls -a
             zip -rq dist.zip *
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.zip  ~/project/.circleci/ansible/roles/deploy/files/

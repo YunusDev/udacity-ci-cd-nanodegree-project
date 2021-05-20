@@ -16,6 +16,7 @@
 - name: "Executing nodejs"
   shell: |
     cd ~/app
+    npm i
     rm -rf dist.zip
     pm2 start main.js -f
     
