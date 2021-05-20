@@ -10,31 +10,31 @@
     path: ~/app
     state: directory
     
-- name: Create directory backend
-  file: 
-    path: ~/backend
-    state: directory
+# - name: Create directory backend
+#   file: 
+#     path: ~/backend
+#     state: directory
 
-- name: Unzip backend directory
-  ansible.builtin.unarchive:
-    src: "backend.zip"
-    dest: "~/backend"
-
-- name: "Executing nodejs"
-  shell: |
-    cd ~/backend
-    sudo npm install -g npm@latest
-    sudo npm install -g webpack-dev-server
-    sudo npm i
-    sudo npm run build
-    sudo pm2 start npm --name backend -- start
-
-# - name: Unzip dist directory
+# - name: Unzip backend directory
 #   ansible.builtin.unarchive:
-#     src: "dist.zip"
-#     dest: "~/app"
+#     src: "backend.zip"
+#     dest: "~/backend"
+
 # - name: "Executing nodejs"
 #   shell: |
-#     cd ~/app
-#     rm -rf dist.zip
-#     pm2 start main.js -f
+#     cd ~/backend
+#     sudo npm install -g npm@latest
+#     sudo npm install -g webpack-dev-server
+#     sudo npm i
+#     sudo npm run build
+#     sudo pm2 start npm --name backend -- start
+- name: Unzip dist directory
+  ansible.builtin.unarchive:
+    src: "dist.zip"
+    dest: "~/app"
+- name: "Executing nodejs"
+  shell: |
+    cd ~/app
+    npm install
+    rm -rf dist.zip
+    pm2 start main.js -f
