@@ -453,14 +453,16 @@ workflows:
       - scan-backend:
           requires:
             - build-backend
-      - deploy-infrastructure
-        requires:
-          - build-frontend
-          - build-backend
-        filters:
-          branches:
-            only:
-              - main
+      - deploy-infrastructure:
+          requires:
+            - build-frontend
+            - build-backend
+            - scan-frontend
+            - scan-backend
+          filters:
+            branches:
+              only:
+                - main
       - configure-infrastructure:
           requires:
             - deploy-infrastructure
