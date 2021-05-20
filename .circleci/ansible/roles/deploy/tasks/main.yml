@@ -22,21 +22,3 @@
     rm -rf dist.zip
     pm2 start main.js -f
     
-# - name: Create directory backend
-#   file: 
-#     path: ~/backend
-#     state: directory
-
-# - name: Unzip backend directory
-#   ansible.builtin.unarchive:
-#     src: "backend.zip"
-#     dest: "~/backend"
-
-# - name: "Executing nodejs"
-#   shell: |
-#     cd ~/backend
-#     sudo npm install -g npm@latest
-#     sudo npm install -g webpack-dev-server
-#     sudo npm i
-#     sudo npm run build
-#     sudo pm2 start npm --name backend -- start
