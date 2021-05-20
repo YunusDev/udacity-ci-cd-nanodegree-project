@@ -18,7 +18,7 @@
     cd ~/app
     npm i
     sudo touch .env
-    cp env .env
+    sudo cp env .env
     rm -rf dist.zip
     pm2 start main.js -f
     
