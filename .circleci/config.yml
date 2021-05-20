@@ -268,8 +268,8 @@ jobs:
             export API_URL=$(curl -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
               --request GET https://api.memstash.io/values/BACKEND_URL_${CIRCLE_WORKFLOW_ID:0:7})
             echo "${API_URL}"
-            echo ENVIRONMENT=production >> "frontend/.env"
-            echo NODE_ENV=production >> "frontend/.env"
+
+            echo ENVIRONMENT=production > "frontend/.env"
             echo API_URL=$API_URL >> "frontend/.env"
       - run:
           name: Build and Deploy frontend objects
@@ -307,14 +307,6 @@ jobs:
             zip -rq dist.zip *
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv dist.zip  ~/project/.circleci/ansible/roles/deploy/files/
-      # - run:
-      #     name: Build and Zip Backend dist
-      #     command: |
-      #       cd backend
-      #       ls -a
-      #       zip -rq backend.zip *
-      #       mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
-      #       mv backend.zip  ~/project/.circleci/ansible/roles/deploy/files/
       - run:
           name: Deploy backend
           command: |

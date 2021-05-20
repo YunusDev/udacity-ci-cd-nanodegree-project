@@ -295,3 +295,17 @@ workflows:
           requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
+
+
+
+
+
+
+          # - run:
+      #     name: Build and Zip Backend dist
+      #     command: |
+      #       cd backend
+      #       ls -a
+      #       zip -rq backend.zip *
+      #       mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
+      #       mv backend.zip  ~/project/.circleci/ansible/roles/deploy/files/
