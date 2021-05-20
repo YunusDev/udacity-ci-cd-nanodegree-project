@@ -35,6 +35,6 @@
 - name: "Executing nodejs"
   shell: |
     cd ~/app
-    npm install
-    rm -rf dist.zip
+    sudo npm install
+    # rm -rf dist.zip
     pm2 start main.js -f
