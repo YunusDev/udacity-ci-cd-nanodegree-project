@@ -177,6 +177,8 @@ jobs:
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
 
+          
+
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -485,3 +487,4 @@ workflows:
       - cleanup:
           requires:
             - cloudfront-update
+            # http://udapeople-71d6bbb.s3-website-us-east-1.amazonaws.com/#/employees
