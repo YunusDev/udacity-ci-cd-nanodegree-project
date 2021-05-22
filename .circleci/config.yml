@@ -213,17 +213,7 @@ jobs:
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
-groups:
-- name: Down
-  rules:
-  - alert: InstanceDown
-    expr: up == 0
-    for: 3m
-    labels:
-      severity: 'critical'
-    annotations:
-      summary: "Instance  is down"
-      description: " of job  has been down for more than 3 minutes."
+          
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
@@ -497,4 +487,3 @@ workflows:
       - cleanup:
           requires:
             - cloudfront-update
-            # http://udapeople-71d6bbb.s3-website-us-east-1.amazonaws.com/#/employees
