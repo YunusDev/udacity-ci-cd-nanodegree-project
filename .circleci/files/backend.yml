@@ -37,15 +37,22 @@ Resources:
         - Key: Name 
           Value: !Sub SecurityGroup-${ID}
 
-
-
-  NatGateway1EIP:
+  NatGatewayEIP:
     Type: AWS::EC2::EIP
     Properties: 
         Domain: vpc
         Tags: 
             - Key: Name 
-              Value: Sub elastic-ip-${ID}
+              Value: !Sub elastic-ip-${ID}
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+        AllocationId: !GetAtt NatGatewayEIP.AllocationId
+        SubnetId: subnet-58505215
+        Tags: 
+            - Key: Name 
+              Value: !Sub nat-gateway-${ID}
 
   EC2Instance:
     Type: AWS::EC2::Instance
