@@ -45,14 +45,14 @@ Resources:
             - Key: Name 
               Value: !Sub elastic-ip-${ID}
 
-  NatGateway:
-    Type: AWS::EC2::NatGateway
-    Properties: 
-        AllocationId: !GetAtt NatGatewayEIP.AllocationId
-        SubnetId: subnet-58505215
-        Tags: 
-            - Key: Name 
-              Value: !Sub nat-gateway-${ID}
+  # NatGateway:
+  #   Type: AWS::EC2::NatGateway
+  #   Properties: 
+  #       AllocationId: !GetAtt NatGatewayEIP.AllocationId
+  #       SubnetId: subnet-58505215
+  #       Tags: 
+  #           - Key: Name 
+  #             Value: !Sub nat-gateway-${ID}
 
   EC2Instance:
     Type: AWS::EC2::Instance
@@ -65,7 +65,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
-          
+
 
   InstanceEIPAssociation:
     Type: AWS::EC2::EIPAssociation
