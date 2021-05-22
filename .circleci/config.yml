@@ -157,8 +157,11 @@ jobs:
             echo "$BACKEND_IPS" >> inventory.txt
             cat inventory.txt
 
+            # aws ec2 describe-addresses --query 'Addresses[0].PublicIp' --filters "Name=tag:project, Values=udapeople" "Name=tag:Name, Values=elastic-ip-180ee12"
+
             ELASTIC_IP=$(aws ec2 describe-addresses \
-              --query 'Addresses[0].PublicIp' --filters "Name=tag:project, Values=udapeople" \
+              --query 'Addresses[0].PublicIp' \
+              --filters "Name=tag:project, Values=udapeople" "Name=tag:Name, Values=elastic-ip-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
 
             BACKEND_IP=$(tail -1 inventory.txt) 
