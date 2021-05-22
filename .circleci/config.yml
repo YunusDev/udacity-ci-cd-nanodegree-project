@@ -150,18 +150,25 @@ jobs:
             # --filters "Name=tag:project, Values=udapeople" \
             cd .circleci/ansible
             echo "[web]" > inventory.txt
+
+
             BACKEND_IPS=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project, Values=udapeople" \
               --output text)
             echo "$BACKEND_IPS" >> inventory.txt
             cat inventory.txt
 
+            ELASTIC_IP=$(aws ec2 describe-addresses \
+              --query 'Addresses[-1].PublicIp' --filters "Name=tag:project, Values=udapeople" \
+              --output text)
+
             BACKEND_IP=$(tail -1 inventory.txt) 
-            echo "Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}"
-            echo "New Backend IP: $BACKEND_IP"
+            echo "Workflow ID: >>>>> ${CIRCLE_WORKFLOW_ID:0:7}"
+            echo "New Backend IP: >>>>> $BACKEND_IP"
+            echo "ELastic IP: >>>>> $ELASTIC_IP"
 
             curl -H "Content-Type: text/plain" -H "token: c4c12387-3106-4872-872e-3e64d7fdf6e2" \
-            --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/BACKEND_URL_${CIRCLE_WORKFLOW_ID:0:7}
+            --request PUT --data "http://$ELASTIC_IP:3030" https://api.memstash.io/values/BACKEND_URL_${CIRCLE_WORKFLOW_ID:0:7}
       - run:
           name: Deploy Frontend Infrastructure
           command: |

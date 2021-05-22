@@ -22,16 +22,8 @@ Resources:
           ToPort: 3030
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
-          FromPort: 9093
-          ToPort: 9093
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
           FromPort: 9100
           ToPort: 9100
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 9090
-          ToPort: 9090
           CidrIp: 0.0.0.0/0
       Tags: 
         - Key: Name 
@@ -44,15 +36,6 @@ Resources:
         Tags: 
             - Key: Name 
               Value: !Sub elastic-ip-${ID}
-
-  # NatGateway:
-  #   Type: AWS::EC2::NatGateway
-  #   Properties: 
-  #       AllocationId: !GetAtt NatGatewayEIP.AllocationId
-  #       SubnetId: subnet-58505215
-  #       Tags: 
-  #           - Key: Name 
-  #             Value: !Sub nat-gateway-${ID}
 
   EC2Instance:
     Type: AWS::EC2::Instance
